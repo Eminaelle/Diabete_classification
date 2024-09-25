@@ -2,25 +2,31 @@
 ## Étape 1 : Exploration des données et identification des valeurs problématiques
 
 Exploration des données :
+
     J'ai exploré les premières lignes du dataset avec df.head() et utilisé df.describe() pour obtenir des statistiques descriptives des colonnes.
     J'ai observé que certaines colonnes (Glucose, BloodPressure, BMI, SkinThickness, Insulin) contiennent des valeurs égales à 0, qui sont médicalement improbables et probablement des données manquantes. Par exemple, une valeur de 0 pour le taux de glucose est impossible chez une personne vivante.
 
 Décision initiale :
+
     Pas d'imputation des valeurs nulles pour cette première série de tests. J'ai décidé de laisser les valeurs 0 telles quelles pour tester les modèles sans modification.
 
 ## Étape 2 : Prétraitement des données
 
 Séparation des features et de la variable cible :
+
     J'ai séparé les features (X) de la variable cible (y), où y représente l'issue diabétique (1 = diabétique, 0 = non diabétique).
 
 python
+
     X = df.drop(columns=['Outcome'])
     y = df['Outcome']
 
 Standardisation :
+
     J'ai standardisé les données à l'aide de StandardScaler pour uniformiser l'échelle des différentes variables et ainsi faciliter l'entraînement des modèles comme la régression logistique.
 
 python
+
     from sklearn.preprocessing import StandardScaler
     scaler = StandardScaler()
     X_scaled = scaler.fit_transform(X)
@@ -32,6 +38,7 @@ python
     J'ai évalué la performance du modèle en utilisant la validation croisée à 5 folds pour obtenir des résultats robustes.
 
 python
+
     from sklearn.linear_model import LogisticRegression
     from sklearn.model_selection import cross_val_score
 
@@ -45,6 +52,7 @@ Résultats : L'accuracy moyenne obtenue est d'environ 0.74, et le modèle s'est 
     J'ai ensuite testé un modèle KNN, en utilisant GridSearchCV pour optimiser le paramètre n_neighbors.
 
 python
+
     from sklearn.neighbors import KNeighborsClassifier
     from sklearn.model_selection import GridSearchCV
 
@@ -60,6 +68,7 @@ Résultats : Le modèle KNN a obtenu une accuracy inférieure à la régression 
     J'ai aussi testé une forêt aléatoire en optimisant plusieurs hyperparamètres (nombre d'arbres et profondeur maximale) à l'aide de GridSearchCV.
 
 python
+
     from sklearn.ensemble import RandomForestClassifier
     param_grid_rf = {'n_estimators': [100, 200, 300], 'max_depth': [10, 20, None]}
 
@@ -76,6 +85,7 @@ Imputation par la médiane :
     Après avoir observé que les valeurs nulles (égales à 0) pouvaient potentiellement poser problème, j'ai essayé d'imputer les valeurs 0 dans les colonnes Glucose, BloodPressure, BMI, SkinThickness, et Insulin avec la médiane.
 
 python
+
     cols_to_replace = ['Glucose', 'BloodPressure', 'SkinThickness', 'Insulin', 'BMI']
     for col in cols_to_replace:
         df[col].replace(0, df[col].median(), inplace=True)
@@ -87,6 +97,7 @@ Imputation par régression :
     J'ai également tenté d'utiliser un modèle de régression pour imputer certaines valeurs manquantes, comme SkinThickness et Insulin, en fonction des autres variables comme BMI et Glucose.
 
 python
+
     from sklearn.linear_model import LinearRegression
 
     # Exemple pour SkinThickness
